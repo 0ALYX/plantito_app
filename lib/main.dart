@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.only(top: 35.0),
+          padding: const EdgeInsets.only(top: 60.0),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -296,7 +296,7 @@ class _MyAppState extends State<MyApp> {
                 SizedBox(height: 10),
                 Container(
                   width: 348,
-                  height: 300,
+                  height: 420,
                   decoration: BoxDecoration(
                     color: Colors.transparent,
                   ),
