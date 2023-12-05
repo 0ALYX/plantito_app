@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "274999278925",
+    "firebase_url": "https://embedded-6ade5-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "embedded-6ade5",
+    "storage_bucket": "embedded-6ade5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:274999278925:android:8c89b10399adc92ce04b04",
+        "android_client_info": {
+          "package_name": "com.example.plantito_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1atd1TLJV5apec0INb8f5HFOqr2WB2EI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
