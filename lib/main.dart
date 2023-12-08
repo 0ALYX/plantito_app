@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
-  runApp(MyApp());
+Future<void> main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: MyApp(
+      
+    ),
+  ));
 }
 
 class MyApp extends StatefulWidget {
@@ -49,12 +58,15 @@ class _MyAppState extends State<MyApp> {
   List<int> minutes = List.generate(60, (index) => index);
   List<int> seconds = List.generate(60, (index) => index);
 
+  double startButtonAlignment = 0.1;
+  double stopButtonAlignment = 0.6;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.only(top: 35.0),
+          padding: const EdgeInsets.only(top: 40.0),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -145,23 +157,23 @@ class _MyAppState extends State<MyApp> {
                                 SizedBox(width: 8),
                                 isEditing
                                     ? Container(
-                                        width: 200,
-                                        child: TextField(
-                                          controller: plantNameController,
-                                          decoration: InputDecoration(
-                                            hintText: 'Name your Plant :)',
-                                          ),
-                                        ),
-                                      )
+                                  width: 200,
+                                  child: TextField(
+                                    controller: plantNameController,
+                                    decoration: InputDecoration(
+                                      hintText: 'Name your Plant :)',
+                                    ),
+                                  ),
+                                )
                                     : Text(
-                                        plantName,
-                                        style: TextStyle(
-                                          fontFamily: 'Lato',
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                        ),
-                                      ),
+                                  plantName,
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -293,7 +305,7 @@ class _MyAppState extends State<MyApp> {
                 SizedBox(height: 10),
                 Container(
                   width: 348,
-                  height: 300,
+                  height: 420,
                   decoration: BoxDecoration(
                     color: Colors.transparent,
                   ),
@@ -304,7 +316,7 @@ class _MyAppState extends State<MyApp> {
                         left: timerXAlignment,
                         child: Container(
                           width: 348,
-                          height: 200,
+                          height: 270,
                           decoration: BoxDecoration(
                             color: Colors.transparent,
                             borderRadius: BorderRadius.circular(5),
@@ -318,14 +330,24 @@ class _MyAppState extends State<MyApp> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(left: 10, right: 10),
-                                child: Text(
-                                  'TIMER',
-                                  style: TextStyle(
-                                    fontFamily: 'Lato',
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.hourglass_bottom_rounded,
+                                      color: Colors.black,
+                                      size: 20,
+                                    ),
+                                    SizedBox(width: 1),
+                                    Text(
+                                      'TIMER',
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               SizedBox(height: 8),
@@ -354,7 +376,7 @@ class _MyAppState extends State<MyApp> {
                                       items: hours.map((int hour) {
                                         return DropdownMenuItem<int>(
                                           value: hour,
-                                          child: Text(hour.toString().padLeft(2, '0')),
+                                          child: Text(hour.toString().padLeft(2, '0') + ' hrs'),
                                         );
                                       }).toList(),
                                     ),
@@ -368,7 +390,7 @@ class _MyAppState extends State<MyApp> {
                                       items: minutes.map((int minute) {
                                         return DropdownMenuItem<int>(
                                           value: minute,
-                                          child: Text(minute.toString().padLeft(2, '0')),
+                                          child: Text(minute.toString().padLeft(2, '0') + ' mins'),
                                         );
                                       }).toList(),
                                     ),
@@ -382,7 +404,7 @@ class _MyAppState extends State<MyApp> {
                                       items: seconds.map((int second) {
                                         return DropdownMenuItem<int>(
                                           value: second,
-                                          child: Text(second.toString().padLeft(2, '0')),
+                                          child: Text(second.toString().padLeft(2, '0') + ' secs'),
                                         );
                                       }).toList(),
                                     ),
@@ -413,7 +435,7 @@ class _MyAppState extends State<MyApp> {
                                       items: hours.map((int hour) {
                                         return DropdownMenuItem<int>(
                                           value: hour,
-                                          child: Text(hour.toString().padLeft(2, '0')),
+                                          child: Text(hour.toString().padLeft(2, '0') + ' hrs'),
                                         );
                                       }).toList(),
                                     ),
@@ -427,7 +449,7 @@ class _MyAppState extends State<MyApp> {
                                       items: minutes.map((int minute) {
                                         return DropdownMenuItem<int>(
                                           value: minute,
-                                          child: Text(minute.toString().padLeft(2, '0')),
+                                          child: Text(minute.toString().padLeft(2, '0') + ' mins'),
                                         );
                                       }).toList(),
                                     ),
@@ -441,7 +463,7 @@ class _MyAppState extends State<MyApp> {
                                       items: seconds.map((int second) {
                                         return DropdownMenuItem<int>(
                                           value: second,
-                                          child: Text(second.toString().padLeft(2, '0')),
+                                          child: Text(second.toString().padLeft(2, '0') + ' secs'),
                                         );
                                       }).toList(),
                                     ),
@@ -449,6 +471,64 @@ class _MyAppState extends State<MyApp> {
                                 ),
                               ),
                             ],
+                          ),
+                        ),
+                      ),
+
+                      // Start and Stop buttons
+                      AnimatedAlign(
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.easeInOut,
+                        alignment: Alignment(0, 0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Handle Start button press
+                            // Add your logic for starting the timer
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.green,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                            child: Text(
+                              'Start',
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      AnimatedAlign(
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.easeInOut,
+                        alignment: Alignment(stopButtonAlignment, 0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Handle Stop button press
+                            // Add your logic for stopping the timer
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                            child: Text(
+                              'Stop',
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                       ),
