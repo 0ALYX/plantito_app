@@ -19,6 +19,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final DatabaseReference _plantito1  = FirebaseDatabase.instance.ref().child('waterstatus');
+  final DatabaseReference _plantito2  = FirebaseDatabase.instance.ref().child('moistcontent');
+  final DatabaseReference _plantito3  = FirebaseDatabase.instance.ref().child('light');
+
   double moistureXAlignment = 250 / 348;
   double moistureYAlignment = 16 / 191;
   double moistureZAlignment = 0.0;
@@ -44,6 +48,47 @@ class _MyAppState extends State<MyApp> {
   int selectedMinute2 = 0;
   int selectedSecond2 = 0;
 
+//water reservoir status
+int status = 1;
+ String getStatusString(int status) {
+  String result = "";
+  switch (status) {
+    case 1:
+      result = "EMPTY";
+      break;
+    case 2:
+      result = "LOW";
+      break;
+    case 3:
+      result = "HALF";
+      break;
+    case 4:
+      result = "FULL";
+      break;
+    case 5: 
+      result = "ABOVE FULL";
+      break;
+    default:
+      result = "UNKNOWN";
+  }
+  return result;
+}
+
+//moisture content status
+int content = 2;
+String getcontentString(int sta) {
+  String result = "";
+  switch (sta) {
+    case 1:
+      result = "DRY";
+      break;
+    case 2:
+      result = "MOIST";
+      break;
+  }
+  return result;
+}
+
   String plantName = 'Plant Name';
   bool isEditing = false;
   TextEditingController plantNameController = TextEditingController();
@@ -51,7 +96,7 @@ class _MyAppState extends State<MyApp> {
   // Leaf icon properties
   double leafIconSize = 40.0;
   double leafIconXPosition = 20.0;
-  double leafIconYPosition = 10.0;
+  double leafIconYPosition = 25.0;
 
   // Define a list of hours, minutes, and seconds
   List<int> hours = List.generate(24, (index) => index);
@@ -63,6 +108,43 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    //firebase connect
+_plantito1.onValue.listen(( event) {
+      DataSnapshot snapshot = event.snapshot;
+      dynamic data = snapshot.value;
+
+      if (data is int) {
+        setState(() {
+          status = data;
+        });
+      } else if (data is double) {
+        setState(() {
+          status = data.toInt();
+        });
+      } else {
+        // Handle other data types or errors
+        print('Value is not numeric');
+      }
+    });
+
+    _plantito2.onValue.listen(( event) {
+      DataSnapshot snapshot = event.snapshot;
+      dynamic data = snapshot.value;
+
+      if (data is int) {
+        setState(() {
+          content = data;
+        });
+      } else if (data is double) {
+        setState(() {
+          content = data.toInt();
+        });
+      } else {
+        // Handle other data types or errors
+        print('Value is not numeric');
+      }
+    });
+    
     return MaterialApp(
       home: Scaffold(
         body: Padding(
@@ -73,7 +155,7 @@ class _MyAppState extends State<MyApp> {
               children: [
                 Container(
                   width: 348,
-                  height: 191,
+                  height: 120,
                   decoration: BoxDecoration(
                     color: Color(0xFFC5D38B),
                     borderRadius: BorderRadius.circular(10),
@@ -86,12 +168,12 @@ class _MyAppState extends State<MyApp> {
                         Positioned(
                           top: leafIconYPosition,
                           left: leafIconXPosition,
-                          child: GestureDetector(
+                          child: GestureDetector( 
                             // You can add onTap handler for interaction with the icon
                             child: Icon(
                               Icons.eco_outlined,
                               color: Color.fromARGB(255, 95, 146, 47),
-                              size: 110,
+                              size: 70,
                             ),
                           ),
                         ),
@@ -116,9 +198,9 @@ class _MyAppState extends State<MyApp> {
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 40),
+                              
                               Text(
-                                'MOIST',
+                                getcontentString(content),
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   fontSize: 38,
@@ -136,57 +218,24 @@ class _MyAppState extends State<MyApp> {
                             ],
                           ),
                         ),
-                        Positioned(
-                          left: 2,
-                          bottom: 10,
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                isEditing = !isEditing;
-                                if (!isEditing) {
-                                  plantName = plantNameController.text;
-                                }
-                              });
-                            },
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.edit,
-                                  color: Color.fromARGB(255, 80, 133, 31),
-                                  size: 20,
+                                 Text(
+                                'My Plant',
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromARGB(255, 35, 87, 0),
                                 ),
-                                SizedBox(width: 8),
-                                isEditing
-                                    ? Container(
-                                  width: 200,
-                                  child: TextField(
-                                    controller: plantNameController,
-                                    decoration: InputDecoration(
-                                      hintText: 'Name your Plant :)',
-                                    ),
-                                  ),
-                                )
-                                    : Text(
-                                  plantName,
-                                  style: TextStyle(
-                                    fontFamily: 'Lato',
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
                     ),
                   ),
-                ),
+                
                 SizedBox(height: 15),
                 Container(
                   width: 348,
-                  height: 191,
+                  height: 120,
                   decoration: BoxDecoration(
                     color: Color(0xFFA5DEEB),
                     borderRadius: BorderRadius.circular(10),
@@ -218,12 +267,12 @@ class _MyAppState extends State<MyApp> {
                                     ],
                                   ),
                                 ),
-                                SizedBox(height: 8),
+                                SizedBox(height: 8),// way sure
                                 Text(
-                                  'LOW\nLEVEL',
+                                  getStatusString(status),
                                   style: TextStyle(
                                     fontFamily: 'Lato',
-                                    fontSize: 38,
+                                    fontSize: 30,
                                     fontWeight: FontWeight.bold,
                                     color: Color(0xFFFFFFFF),
                                     shadows: [
@@ -242,13 +291,12 @@ class _MyAppState extends State<MyApp> {
                         // Cartoon water drop icon
                         Positioned(
                           left: 20,
-                          top: 20,
+                          top: 10,
                           child: GestureDetector(
-                            // You can add onTap handler for interaction with the icon
                             child: Icon(
                               Icons.water_drop_outlined,
                               color: Color.fromARGB(255, 67, 141, 202),
-                              size: 100,
+                              size: 65,
                             ),
                           ),
                         ),
@@ -260,7 +308,7 @@ class _MyAppState extends State<MyApp> {
                 Expanded(
                   child: Container(
                     width: 348,
-                    height: 51,
+                    height: 30,
                     decoration: BoxDecoration(
                       color: Color(0xFFFFED8C),
                       borderRadius: BorderRadius.circular(10),
@@ -298,6 +346,7 @@ class _MyAppState extends State<MyApp> {
                           onChanged: (value) {
                             setState(() {
                               isSwitched = value;
+                              _plantito3.set(value ? true : false);
                             });
                           },
                         ),
@@ -308,7 +357,7 @@ class _MyAppState extends State<MyApp> {
                 SizedBox(height: 10),
                 Container(
                   width: 348,
-                  height: 420,
+                  height: 300,
                   decoration: BoxDecoration(
                     color: Colors.transparent,
                   ),
@@ -482,7 +531,7 @@ class _MyAppState extends State<MyApp> {
                       AnimatedAlign(
                         duration: Duration(milliseconds: 500),
                         curve: Curves.easeInOut,
-                        alignment: Alignment(0, 0),
+                        alignment: Alignment(-0.6, 0.3),
                         child: ElevatedButton(
                           onPressed: () {
                             // Handle Start button press
@@ -502,6 +551,7 @@ class _MyAppState extends State<MyApp> {
                                 fontFamily: 'Lato',
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
+                                color: const Color.fromARGB(255, 255, 255, 255),
                               ),
                             ),
                           ),
@@ -510,7 +560,7 @@ class _MyAppState extends State<MyApp> {
                       AnimatedAlign(
                         duration: Duration(milliseconds: 500),
                         curve: Curves.easeInOut,
-                        alignment: Alignment(stopButtonAlignment, 0),
+                        alignment: Alignment(stopButtonAlignment, 0.3),
                         child: ElevatedButton(
                           onPressed: () {
                             // Handle Stop button press
@@ -530,6 +580,7 @@ class _MyAppState extends State<MyApp> {
                                 fontFamily: 'Lato',
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
+                                color: const Color.fromARGB(255, 255, 255, 255),
                               ),
                             ),
                           ),
@@ -546,3 +597,5 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+
+
