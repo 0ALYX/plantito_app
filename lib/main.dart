@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
               children: [
                 Container(
                   width: 348,
-                  height: 191,
+                  height: 121,
                   decoration: BoxDecoration(
                     color: Color(0xFFC5D38B),
                     borderRadius: BorderRadius.circular(10),
@@ -86,7 +86,7 @@ class _MyAppState extends State<MyApp> {
                         Align(
                           alignment: Alignment(moistureXAlignment, moistureYAlignment),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                            //crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
                                 'Moisture Content',
@@ -104,7 +104,6 @@ class _MyAppState extends State<MyApp> {
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 40),
                               Text(
                                 'MOIST',
                                 style: TextStyle(
@@ -174,7 +173,7 @@ class _MyAppState extends State<MyApp> {
                 SizedBox(height: 15),
                 Container(
                   width: 348,
-                  height: 191,
+                  height: 120,
                   decoration: BoxDecoration(
                     color: Color(0xFFA5DEEB),
                     borderRadius: BorderRadius.circular(10),
@@ -208,10 +207,10 @@ class _MyAppState extends State<MyApp> {
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  'LOW\nLEVEL',
+                                  'LOW LEVEL',
                                   style: TextStyle(
                                     fontFamily: 'Lato',
-                                    fontSize: 38,
+                                    fontSize: 30,
                                     fontWeight: FontWeight.bold,
                                     color: Color(0xFFFFFFFF),
                                     shadows: [
@@ -245,52 +244,50 @@ class _MyAppState extends State<MyApp> {
                   ),
                 ),
                 SizedBox(height: 16),
-                Expanded(
-                  child: Container(
-                    width: 348,
-                    height: 51,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFFED8C),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: Color(0xFF8F8F8F),
-                        width: 1,
+                Container(
+                  width: 348,
+                  height: 51,
+                  decoration: BoxDecoration(
+                    color: Color(0xFFFFED8C),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: Color(0xFF8F8F8F),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16.0),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.wb_sunny,
+                              color: Color.fromARGB(255, 255, 196, 0),
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              'LIGHT',
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF000000),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.wb_sunny,
-                                color: Color.fromARGB(255, 255, 196, 0),
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                'LIGHT',
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF000000),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Switch(
-                          value: isSwitched,
-                          onChanged: (value) {
-                            setState(() {
-                              isSwitched = value;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
+                      Switch(
+                        value: isSwitched,
+                        onChanged: (value) {
+                          setState(() {
+                            isSwitched = value;
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(height: 10),
