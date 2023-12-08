@@ -155,7 +155,7 @@ _plantito1.onValue.listen(( event) {
               children: [
                 Container(
                   width: 348,
-                  height: 191,
+                  height: 120,
                   decoration: BoxDecoration(
                     color: Color(0xFFC5D38B),
                     borderRadius: BorderRadius.circular(10),
@@ -180,7 +180,7 @@ _plantito1.onValue.listen(( event) {
                         Align(
                           alignment: Alignment(moistureXAlignment, moistureYAlignment),
                           child: Column(
-                            //crossAxisAlignment: CrossAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
                                 'Moisture Content',
@@ -198,7 +198,7 @@ _plantito1.onValue.listen(( event) {
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 40),
+                              
                               Text(
                                 getcontentString(content),
                                 style: TextStyle(
@@ -269,7 +269,7 @@ _plantito1.onValue.listen(( event) {
                                 ),
                                 SizedBox(height: 8),// way sure
                                 Text(
-                                  'LOW\nLEVEL',
+                                  getStatusString(status),
                                   style: TextStyle(
                                     fontFamily: 'Lato',
                                     fontSize: 30,
@@ -308,7 +308,7 @@ _plantito1.onValue.listen(( event) {
                 Expanded(
                   child: Container(
                     width: 348,
-                    height: 51,
+                    height: 30,
                     decoration: BoxDecoration(
                       color: Color(0xFFFFED8C),
                       borderRadius: BorderRadius.circular(10),
@@ -346,6 +346,7 @@ _plantito1.onValue.listen(( event) {
                           onChanged: (value) {
                             setState(() {
                               isSwitched = value;
+                              _plantito3.set(value ? true : false);
                             });
                           },
                         ),
