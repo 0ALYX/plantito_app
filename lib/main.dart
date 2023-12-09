@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'dart:async';
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -8,7 +9,7 @@ Future<void> main() async{
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     home: MyApp(
-      
+
     ),
   ));
 }
@@ -17,6 +18,22 @@ class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 }
+
+////////////////////////////////////////
+
+class Timer {
+  late int hours;
+  late int minutes;
+  late int seconds;
+
+  Timer({required this.hours, required this.minutes, required this.seconds});
+
+  int getTotalSeconds() {
+    return hours * 3600 + minutes * 60 + seconds;
+  }
+}
+
+///////////////////////////////////////
 
 class _MyAppState extends State<MyApp> {
   final DatabaseReference _plantito1  = FirebaseDatabase.instance.ref().child('waterstatus');
@@ -47,6 +64,7 @@ class _MyAppState extends State<MyApp> {
   int selectedHour2 = 0;
   int selectedMinute2 = 0;
   int selectedSecond2 = 0;
+  
 
 //water reservoir status
 int status = 1;
@@ -105,6 +123,75 @@ String getcontentString(int sta) {
 
   double startButtonAlignment = 0.1;
   double stopButtonAlignment = 0.6;
+  int remainingSeconds = 0;
+
+  ////////////////////////////////
+  ////////////////////////////////
+  Timer selectedTimer = Timer(hours: 0, minutes: 0, seconds: 0);
+  bool isTimerRunning = false;
+
+ void startTimer() {
+  int totalSeconds = selectedTimer.getTotalSeconds();
+  int currentSeconds = totalSeconds;
+
+  const oneSecond = Duration(seconds: 1);
+
+  void updateTimer() {
+    if (currentSeconds <= 0) {
+      // Timer reached zero, stop the timer
+      stopTimer();
+    } else {
+      setState(() {
+        remainingSeconds = currentSeconds;
+        currentSeconds -= 1;
+      });
+
+      // Schedule the next update after one second
+      Future.delayed(oneSecond, updateTimer);
+    }
+  }
+
+  // Ensure that the timer is not already running
+  if (!isTimerRunning) {
+    // Start the initial update without subtracting 1
+    updateTimer();
+
+    setState(() {
+      isTimerRunning = true;
+    });
+  }
+}
+
+  void stopTimer() {
+    // Stop the timer by setting isTimerRunning to false
+    setState(() {
+      isTimerRunning = false;
+    });
+  }
+
+  String convertSecondsToTime(int seconds) {
+  int hours = seconds ~/ 3600;
+  int minutes = (seconds % 3600) ~/ 60;
+  int remainingSeconds = seconds % 60;
+  return '${hours.toString().padLeft(2, '0')} hrs ${minutes.toString().padLeft(2, '0')} mins ${remainingSeconds.toString().padLeft(2, '0')} secs';
+}
+
+
+  Widget buildTimerDisplay() {
+  // No need to subtract 1 here, as it's already handled in the timer logic
+    return Text(
+      'Timer: ${convertSecondsToTime(remainingSeconds)}',
+      style: TextStyle(
+        fontFamily: 'Lato',
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: Colors.black,
+      ),
+    );
+}
+
+////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
 
   @override
   Widget build(BuildContext context) {
@@ -403,6 +490,7 @@ _plantito1.onValue.listen(( event) {
                                 ),
                               ),
                               SizedBox(height: 8),
+
                               Padding(
                                 padding: const EdgeInsets.only(left: 10, right: 10),
                                 child: Row(
@@ -417,7 +505,10 @@ _plantito1.onValue.listen(( event) {
                                         color: Colors.black,
                                       ),
                                     ),
-                                    // Dropdown list for hours, minutes, and seconds
+                                    isTimerRunning
+                                    ? buildTimerDisplay()
+                                    : Row(children: [
+                                      // Dropdown list for hours, minutes, and seconds
                                     DropdownButton<int>(
                                       value: selectedHour,
                                       onChanged: (int? newValue) {
@@ -460,10 +551,97 @@ _plantito1.onValue.listen(( event) {
                                         );
                                       }).toList(),
                                     ),
+                                    ],)
+                                    
                                   ],
                                 ),
                               ),
-                              Padding(
+                              ////////////////////////////////////////////
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // Start and Stop buttons
+                      AnimatedAlign(
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.easeInOut,
+                        alignment: Alignment(-0.6, 0.3),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Handle Start button press
+                            // Add your logic for starting the timer
+                            if (!isTimerRunning) {
+                              startTimer();
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.green,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                            child: Text(
+                              'Start',
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: const Color.fromARGB(255, 255, 255, 255),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      AnimatedAlign(
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.easeInOut,
+                        alignment: Alignment(stopButtonAlignment, 0.3),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Handle Stop button press
+                            // Add your logic for stopping the timer
+                             if (isTimerRunning) {
+                                stopTimer();
+                              }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                            child: Text(
+                              'Stop',
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: const Color.fromARGB(255, 255, 255, 255),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+/*
+Padding(
                                 padding: const EdgeInsets.only(left: 10, right: 10),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -522,80 +700,4 @@ _plantito1.onValue.listen(( event) {
                                   ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      // Start and Stop buttons
-                      AnimatedAlign(
-                        duration: Duration(milliseconds: 500),
-                        curve: Curves.easeInOut,
-                        alignment: Alignment(-0.6, 0.3),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Handle Start button press
-                            // Add your logic for starting the timer
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.green,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                            child: Text(
-                              'Start',
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: const Color.fromARGB(255, 255, 255, 255),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      AnimatedAlign(
-                        duration: Duration(milliseconds: 500),
-                        curve: Curves.easeInOut,
-                        alignment: Alignment(stopButtonAlignment, 0.3),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Handle Stop button press
-                            // Add your logic for stopping the timer
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.red,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                            child: Text(
-                              'Stop',
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: const Color.fromARGB(255, 255, 255, 255),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-
+*/
