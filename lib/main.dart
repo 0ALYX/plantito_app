@@ -130,7 +130,7 @@ String getcontentString(int sta) {
 void startTimer() {
   recalculateTotalSeconds();  // Recalculate totalSeconds before starting the timer
 
-  const oneSecond = Duration(seconds: 2); //second timer delay is 2, 1sc delay turns into millisecs
+  const oneSecond = Duration(seconds: 1); //1 sec delay
 
   void updateTimer() {
     if (remainingSeconds <= 0) {
