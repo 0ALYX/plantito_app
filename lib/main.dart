@@ -426,6 +426,7 @@ _plantito1.onValue.listen(( event) {
                             ],
                           ),
                         ),
+                        //LED toggle switch
                         Switch(
                           value: isSwitched,
                           onChanged: (value) {
