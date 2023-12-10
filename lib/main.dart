@@ -19,10 +19,7 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-
-
-////////////////////////////////////////
-
+//for timer
 class Timer {
   late int hours;
   late int minutes;
@@ -34,8 +31,6 @@ class Timer {
     return hours * 3600 + minutes * 60 + seconds;
   }
 }
-
-///////////////////////////////////////
 
 class _MyAppState extends State<MyApp> {
   final DatabaseReference _plantito1  = FirebaseDatabase.instance.ref().child('waterstatus');
@@ -135,7 +130,7 @@ String getcontentString(int sta) {
 void startTimer() {
   recalculateTotalSeconds();  // Recalculate totalSeconds before starting the timer
 
-  const oneSecond = Duration(seconds: 2);
+  const oneSecond = Duration(seconds: 2); //second timer delay is 2, 1sc delay turns into millisecs
 
   void updateTimer() {
     if (remainingSeconds <= 0) {
@@ -179,14 +174,14 @@ void recalculateTotalSeconds() {
   int hours = seconds ~/ 3600;
   int minutes = (seconds % 3600) ~/ 60;
   int remainingSeconds = seconds % 60;
-  return '${hours.toString().padLeft(2, '0')} hrs ${minutes.toString().padLeft(2, '0')} mins ${remainingSeconds.toString().padLeft(2, '0')} secs';
+  return '${hours.toString().padLeft(2,'0')}hrs ${minutes.toString().padLeft(2,'0')}mins ${remainingSeconds.toString().padLeft(2,'0')}secs';
 }
 
 
   Widget buildTimerDisplay() {
   // No need to subtract 1 here, as it's already handled in the timer logic
     return Text(
-      'Timer: ${convertSecondsToTime(remainingSeconds)}',
+      '${convertSecondsToTime(remainingSeconds)}',
       style: TextStyle(
         fontFamily: 'Lato',
         fontSize: 16,
@@ -500,7 +495,7 @@ _plantito1.onValue.listen(( event) {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Start Time: ',
+                                      'Start Time:',
                                       style: TextStyle(
                                         fontFamily: 'Lato',
                                         fontSize: 16,
@@ -559,7 +554,6 @@ _plantito1.onValue.listen(( event) {
                                   ],
                                 ),
                               ),
-                              ////////////////////////////////////////////
                             ],
                           ),
                         ),
