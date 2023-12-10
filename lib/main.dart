@@ -19,6 +19,8 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
+
+
 ////////////////////////////////////////
 
 class Timer {
@@ -125,25 +127,24 @@ String getcontentString(int sta) {
   double stopButtonAlignment = 0.6;
   int remainingSeconds = 0;
 
-  ////////////////////////////////
-  ////////////////////////////////
+  
+  //Timer Logic
   Timer selectedTimer = Timer(hours: 0, minutes: 0, seconds: 0);
   bool isTimerRunning = false;
 
- void startTimer() {
-  int totalSeconds = selectedTimer.getTotalSeconds();
-  int currentSeconds = totalSeconds;
+void startTimer() {
+  recalculateTotalSeconds();  // Recalculate totalSeconds before starting the timer
 
-  const oneSecond = Duration(seconds: 1);
+  const oneSecond = Duration(seconds: 2);
 
   void updateTimer() {
-    if (currentSeconds <= 0) {
+    if (remainingSeconds <= 0) {
       // Timer reached zero, stop the timer
       stopTimer();
     } else {
       setState(() {
-        remainingSeconds = currentSeconds;
-        currentSeconds -= 1;
+        //remainingSeconds = currentSeconds;
+        remainingSeconds -= 1;
       });
 
       // Schedule the next update after one second
@@ -161,6 +162,10 @@ String getcontentString(int sta) {
     });
   }
 }
+void recalculateTotalSeconds() {
+  selectedTimer = Timer(hours: selectedHour, minutes: selectedMinute, seconds: selectedSecond);
+  remainingSeconds = selectedTimer.getTotalSeconds();
+}
 
   void stopTimer() {
     // Stop the timer by setting isTimerRunning to false
@@ -168,6 +173,7 @@ String getcontentString(int sta) {
       isTimerRunning = false;
     });
   }
+
 
   String convertSecondsToTime(int seconds) {
   int hours = seconds ~/ 3600;
@@ -188,10 +194,7 @@ String getcontentString(int sta) {
         color: Colors.black,
       ),
     );
-}
-
-////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////
+}//Timer Logic End
 
   @override
   Widget build(BuildContext context) {
@@ -231,7 +234,7 @@ _plantito1.onValue.listen(( event) {
         print('Value is not numeric');
       }
     });
-    
+
     return MaterialApp(
       home: Scaffold(
         body: Padding(
@@ -638,66 +641,3 @@ _plantito1.onValue.listen(( event) {
     );
   }
 }
-
-
-/*
-Padding(
-                                padding: const EdgeInsets.only(left: 10, right: 10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'End Time: ',
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    DropdownButton<int>(
-                                      value: selectedHour2,
-                                      onChanged: (int? newValue) {
-                                        setState(() {
-                                          selectedHour2 = newValue!;
-                                        });
-                                      },
-                                      items: hours.map((int hour) {
-                                        return DropdownMenuItem<int>(
-                                          value: hour,
-                                          child: Text(hour.toString().padLeft(2, '0') + ' hrs'),
-                                        );
-                                      }).toList(),
-                                    ),
-                                    DropdownButton<int>(
-                                      value: selectedMinute2,
-                                      onChanged: (int? newValue) {
-                                        setState(() {
-                                          selectedMinute2 = newValue!;
-                                        });
-                                      },
-                                      items: minutes.map((int minute) {
-                                        return DropdownMenuItem<int>(
-                                          value: minute,
-                                          child: Text(minute.toString().padLeft(2, '0') + ' mins'),
-                                        );
-                                      }).toList(),
-                                    ),
-                                    DropdownButton<int>(
-                                      value: selectedSecond2,
-                                      onChanged: (int? newValue) {
-                                        setState(() {
-                                          selectedSecond2 = newValue!;
-                                        });
-                                      },
-                                      items: seconds.map((int second) {
-                                        return DropdownMenuItem<int>(
-                                          value: second,
-                                          child: Text(second.toString().padLeft(2, '0') + ' secs'),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-*/
