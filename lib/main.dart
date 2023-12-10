@@ -80,9 +80,9 @@ int status = 1;
     case 4:
       result = "FULL";
       break;
-    case 5: 
+    /*case 5: 
       result = "ABOVE FULL";
-      break;
+      break; */
     default:
       result = "UNKNOWN";
   }
