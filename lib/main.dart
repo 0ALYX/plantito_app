@@ -80,9 +80,6 @@ int status = 1;
     case 4:
       result = "FULL";
       break;
-    /*case 5: 
-      result = "ABOVE FULL";
-      break; */
     default:
       result = "UNKNOWN";
   }
@@ -105,13 +102,13 @@ String getcontentString(int sta) {
 }
 
   String plantName = 'Plant Name';
-  bool isEditing = false;
-  TextEditingController plantNameController = TextEditingController();
+ // bool isEditing = false;
+ // TextEditingController plantNameController = TextEditingController();
 
   // Leaf icon properties
   double leafIconSize = 40.0;
   double leafIconXPosition = 20.0;
-  double leafIconYPosition = 25.0;
+  double leafIconYPosition = 18.0;
 
   // Define a list of hours, minutes, and seconds
   List<int> hours = List.generate(24, (index) => index);
@@ -130,12 +127,20 @@ String getcontentString(int sta) {
 void startTimer() {
   recalculateTotalSeconds();  // Recalculate totalSeconds before starting the timer
 
-  const oneSecond = Duration(seconds: 1); //1 sec delay
+  //to add later...send signal to arduino for LED logic
+  // Send signal to Arduino to turn on LED
+    //FirebaseDatabase.instance.reference().child('signalLED').set('on');
+
+  const oneSecond = Duration(seconds: 1); 
 
   void updateTimer() {
     if (remainingSeconds <= 0) {
       // Timer reached zero, stop the timer
       stopTimer();
+
+      //to add later...send signal to arduino for LED logic
+      // Send signal to Arduino to turn off LED
+        //FirebaseDatabase.instance.reference().child('signalLED').set('off');
     } else {
       setState(() {
         //remainingSeconds = currentSeconds;
@@ -240,7 +245,7 @@ _plantito1.onValue.listen(( event) {
               children: [
                 Container(
                   width: 348,
-                  height: 120,
+                  height: 160,
                   decoration: BoxDecoration(
                     color: Color(0xFFC5D38B),
                     borderRadius: BorderRadius.circular(10),
@@ -258,7 +263,7 @@ _plantito1.onValue.listen(( event) {
                             child: Icon(
                               Icons.eco_outlined,
                               color: Color.fromARGB(255, 95, 146, 47),
-                              size: 70,
+                              size: 100,
                             ),
                           ),
                         ),
@@ -271,7 +276,7 @@ _plantito1.onValue.listen(( event) {
                                 'Moisture Content',
                                 style: TextStyle(
                                   fontFamily: 'Lato',
-                                  fontSize: 16,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Color(0xFFFFFFFF),
                                   shadows: [
@@ -288,7 +293,7 @@ _plantito1.onValue.listen(( event) {
                                 getcontentString(content),
                                 style: TextStyle(
                                   fontFamily: 'Lato',
-                                  fontSize: 38,
+                                  fontSize: 44,
                                   fontWeight: FontWeight.bold,
                                   color: Color(0xFFFFFFFF),
                                   shadows: [
@@ -307,11 +312,11 @@ _plantito1.onValue.listen(( event) {
                                 'My Plant',
                                 style: TextStyle(
                                   fontFamily: 'Lato',
-                                  fontSize: 16,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                   color: Color.fromARGB(255, 35, 87, 0),
                                 ),
-                              ),
+                              )
                             ],
                           ),
                     ),
@@ -320,7 +325,7 @@ _plantito1.onValue.listen(( event) {
                 SizedBox(height: 15),
                 Container(
                   width: 348,
-                  height: 120,
+                  height: 160,
                   decoration: BoxDecoration(
                     color: Color(0xFFA5DEEB),
                     borderRadius: BorderRadius.circular(10),
@@ -340,7 +345,7 @@ _plantito1.onValue.listen(( event) {
                                   'Water Reservoir',
                                   style: TextStyle(
                                     fontFamily: 'Lato',
-                                    fontSize: 16,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     color: Color(0xFFFFFFFF),
                                     shadows: [
@@ -357,7 +362,7 @@ _plantito1.onValue.listen(( event) {
                                   getStatusString(status),
                                   style: TextStyle(
                                     fontFamily: 'Lato',
-                                    fontSize: 30,
+                                    fontSize:40,
                                     fontWeight: FontWeight.bold,
                                     color: Color(0xFFFFFFFF),
                                     shadows: [
@@ -375,13 +380,13 @@ _plantito1.onValue.listen(( event) {
                         ),
                         // Cartoon water drop icon
                         Positioned(
-                          left: 20,
+                          left: 10,
                           top: 10,
                           child: GestureDetector(
                             child: Icon(
                               Icons.water_drop_outlined,
                               color: Color.fromARGB(255, 67, 141, 202),
-                              size: 65,
+                              size: 100,
                             ),
                           ),
                         ),
@@ -393,7 +398,7 @@ _plantito1.onValue.listen(( event) {
                 Expanded(
                   child: Container(
                     width: 348,
-                    height: 30,
+                    height: 20,
                     decoration: BoxDecoration(
                       color: Color(0xFFFFED8C),
                       borderRadius: BorderRadius.circular(10),
@@ -418,7 +423,7 @@ _plantito1.onValue.listen(( event) {
                                 'LIGHT',
                                 style: TextStyle(
                                   fontFamily: 'Lato',
-                                  fontSize: 14,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                   color: Color(0xFF000000),
                                 ),
