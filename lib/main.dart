@@ -121,32 +121,33 @@ String getcontentString(int sta) {
 
   
   //Timer Logic
+  //initialaized class
   Timer selectedTimer = Timer(hours: 0, minutes: 0, seconds: 0);
-  bool isTimerRunning = false;
+  bool isTimerRunning = false; //bool var to track id running or not
 
-void startTimer() {
+void startTimer() { //start timer
   recalculateTotalSeconds();  // Recalculate totalSeconds before starting the timer
 
-  //to add later...send signal to arduino for LED logic
   // Send signal to Arduino to turn on LED
-    //FirebaseDatabase.instance.reference().child('signalLED').set('on');
+    FirebaseDatabase.instance.ref().child('light').set(true);
 
   const oneSecond = Duration(seconds: 1); 
 
-  void updateTimer() {
-    if (remainingSeconds <= 0) {
+  void updateTimer() { //implement recursive function, w/ 1 sec delay between updates
+    if (remainingSeconds <= 0) { 
       // Timer reached zero, stop the timer
       stopTimer();
 
-      //to add later...send signal to arduino for LED logic
       // Send signal to Arduino to turn off LED
-        //FirebaseDatabase.instance.reference().child('signalLED').set('off');
+        FirebaseDatabase.instance.ref().child('light').set(false);
     } else {
       setState(() {
         //remainingSeconds = currentSeconds;
         remainingSeconds -= 1;
       });
 
+      // Send signal to Arduino to turn on/off LED immediately
+    FirebaseDatabase.instance.ref().child('signalLED').set(remainingSeconds > 0);
       // Schedule the next update after one second
       Future.delayed(oneSecond, updateTimer);
     }
@@ -162,7 +163,7 @@ void startTimer() {
     });
   }
 }
-void recalculateTotalSeconds() {
+void recalculateTotalSeconds() { //recal total num of sec based on selected hr,min,sec
   selectedTimer = Timer(hours: selectedHour, minutes: selectedMinute, seconds: selectedSecond);
   remainingSeconds = selectedTimer.getTotalSeconds();
 }
@@ -175,7 +176,7 @@ void recalculateTotalSeconds() {
   }
 
 
-  String convertSecondsToTime(int seconds) {
+  String convertSecondsToTime(int seconds) { //takes duration in secs & conerts into formatted string
   int hours = seconds ~/ 3600;
   int minutes = (seconds % 3600) ~/ 60;
   int remainingSeconds = seconds % 60;
@@ -183,7 +184,7 @@ void recalculateTotalSeconds() {
 }
 
 
-  Widget buildTimerDisplay() {
+  Widget buildTimerDisplay() { //disp current timer value
   // No need to subtract 1 here, as it's already handled in the timer logic
     return Text(
       '${convertSecondsToTime(remainingSeconds)}',
@@ -199,10 +200,11 @@ void recalculateTotalSeconds() {
   @override
   Widget build(BuildContext context) {
     //firebase connect
-_plantito1.onValue.listen(( event) {
-      DataSnapshot snapshot = event.snapshot;
+_plantito1.onValue.listen(( event) { //set listener for changes
+      DataSnapshot snapshot = event.snapshot; //provides an event
       dynamic data = snapshot.value;
-
+//checks the type of data received from databse if data is int it updates the status
+//if double it converts double to int before updating stats
       if (data is int) {
         setState(() {
           status = data;
@@ -608,6 +610,7 @@ _plantito1.onValue.listen(( event) {
                             // Add your logic for stopping the timer
                              if (isTimerRunning) {
                                 stopTimer();
+                                FirebaseDatabase.instance.ref().child('light').set(false);
                               }
                           },
                           style: ElevatedButton.styleFrom(
